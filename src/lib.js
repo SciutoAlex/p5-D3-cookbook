@@ -2,11 +2,14 @@
 
 p5.prototype.D3Connect = function() {
 
+  //array of two-way channels for communication
   var arrayOfListeners = arguments;
+
   //Create the d3 dispatch object using the arguments passed from the p5 sketch.
   window.p5connect = d3.dispatch.apply(this, arrayOfListeners);
 
-  //Initialize an object that will store passed data
+  //Initialize an object that will store passed data and store whether an event
+  //was fired during that draw cycle.
   var storedSharedData = {},
       eventFired = {},
       i = -1,
@@ -22,7 +25,7 @@ p5.prototype.D3Connect = function() {
     p5connect.on(name, function(data) {
       storedSharedData[name] = data;
       eventFired[name] = true;
-      emitEvent(name, data);
+      //emitEvent(name, data);
     });
   }
 
@@ -62,18 +65,20 @@ p5.prototype.D3Connect = function() {
     }
   };
 
-  function emitEvent(name, data) {
-    p5.prototype.D3EventName = name;
-    p5.prototype.D3EventData = data;
-    var d3EventFired = p5.d3EventFired || window.d3EventFired;
-    console.log(d3EventFired);
-    if (typeof d3EventFired === 'function') {
-      var executeDefault = d3EventFired(e);
-      if(executeDefault === false) {
-        e.preventDefault();
-      }
-    }
-  }
+  //Not sure how to make this into a function similar to .mousemove().
+  //For now, events are stored and checked using .wasFired() and cleared after
+  //each draw.
+  // function emitEvent(name, data) {
+  //   p5.prototype.D3EventName = name;
+  //   p5.prototype.D3EventData = data;
+  //   var d3EventFired = p5.d3EventFired;
+  //   if (typeof d3EventFired === 'function') {
+  //     var executeDefault = d3EventFired(e);
+  //     if(executeDefault === false) {
+  //       e.preventDefault();
+  //     }
+  //   }
+  // }
 
 
 

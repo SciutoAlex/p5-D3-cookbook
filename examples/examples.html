@@ -107,6 +107,8 @@
 				n = 00;
 				while(++i < n) particleArray.push(new particle());
 			}
+
+
 			p.draw = function() {
 				rateCounter++;
 				var numberToCreate = p.map(p.int(d3Module.getValue('speed')), 10, 100, 0, 20);
@@ -163,10 +165,11 @@
 
 
 			}
-
-			p.d3EventFired = function() {
-				console.log('fired');
-			}
+			// This is what we'd like to have happen. Can't figure out how to get it
+			// to work yet.
+			// p.d3EventFired = function() {
+			// 	console.log('fired');
+			// }
 
 			function particle(lifeTime) {
 				this.color = d3.rgb(d3Module.getValue('color'));
@@ -196,8 +199,9 @@
 		}
 	</script>
 
-
+	<!-- \\\\\\\\\\\ -->
 	<!-- D3 controls -->
+	<!-- /////////////// -->
 	<script type="text/javascript">
 	  var radius = 20;
 		var d3Obj = d3.select('#d3ContainerColors').append('svg').attr('height', 100).attr('width', 500)
