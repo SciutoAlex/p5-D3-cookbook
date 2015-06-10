@@ -13,6 +13,7 @@
 		font-family:sans-serif;
 	}
 	.col {
+		width:40%;
 		float:left;
 		margin:5%;
 	}
@@ -81,7 +82,7 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>
 	<script src="../src/lib.js"></script>
 
-	//p5 View
+	<!-- p5 View -->
 	<script>
 		var p5Sketch = new p5(mySketch, "sketchContainer");
 
@@ -98,7 +99,7 @@
 			var d3Module = p.D3Connect('color', 'size', 'speed', 'colorArray');
 			var particleArray = [];
 			p.setup = function() {
-				p.createCanvas(720, 400);
+				p.createCanvas(500, 600);
 				p.frameRate(30);
 				p.noStroke();
 				p.fill(130,23,200);
@@ -196,10 +197,10 @@
 	</script>
 
 
-	//D3 controls
+	<!-- D3 controls -->
 	<script type="text/javascript">
 	  var radius = 20;
-		var d3Obj = d3.select('#d3ContainerColors').append('svg').attr('height', 150).attr('width', 500)
+		var d3Obj = d3.select('#d3ContainerColors').append('svg').attr('height', 100).attr('width', 500)
 		  .append('g').attr('transform', 'translate(10,10)');
 
 		var colorCircleData = d3.scale.category20().range();
@@ -262,7 +263,7 @@
 
 		//Line Graph
 		//taken from http://bl.ocks.org/duopixel/3824661
-		var svg = d3.select("#d3ContainerLine").append("svg").attr("width", 500).attr("height", 200);
+		var svg = d3.select("#d3ContainerLine").append("svg").attr("width", 500).attr("height", 100);
 		var svgWidth = parseInt(d3.select('#d3Container').style('width'), 10)
     var data = [18,18,5,2,4,6,13,18,19,20,20,6,3,2,0,0,0,0,0]
     var x = d3.scale.linear().domain([0, data.length-1]).range([0, svgWidth]);
