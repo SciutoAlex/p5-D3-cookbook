@@ -243,20 +243,33 @@
 			var offsetSize = radius * 2 * 1.1;
 			var rowSize = 50;
 			var rowCount = 1;
-			d3Grid.selectAll('circle').remove();
-			d3Grid.selectAll('circle')
-				.data(d)
-				.enter()
+
+			var join = d3Grid.selectAll('circle')
+				.data(d);
+
+			join.style('fill', function(d) {
+				return d.toString();
+			});
+
+			join.exit().remove()
+
+			join.enter()
 				.append('circle')
-				.attr('r', radius)
+				.attr('r', 0)
 				.attr('cx', function(d,i) {
 					return (i%rowSize) * offsetSize;
 				})
 				.attr('cy', function(d,i) {
-					return Math.floor(i/rowSize) * offsetSize;
+					return Math.floor(i/rowSize) * offsetSize - 10;
 				})
 				.style('fill', function(d) {
 					return d.toString();
+				})
+				.transition()
+				.duration(300)
+				.attr('r', radius)
+				.attr('cy', function(d,i) {
+					return Math.floor(i/rowSize) * offsetSize;
 				});
 
 		});
