@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>p5 D3 Cookbook</title>
+
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/p5.js"></script>
+  <script type="text/javascript">
+    //D3 paths
+    //p5 D3 Cookbook
+
+    /*
+    This example shows you how to use D3 to generate a variety of paths through control points.
+
+    D3 offers a powerful path generation tool. This tool takes sets of points [[x1,y1],[x2,y2],...] and translates them into an SVG Path string. Newer browsers offer a path2d(SVGpath) that enables the drawing of SVG defined paths in the canvas window.
+
+    CodePen: http://codepen.io/SciutoAlex/pen/aOLaaV
+    D3 Reference: https://github.com/mbostock/d3/wiki/SVG-Shapes
+    */
+
+    function setup() {
+      var margin = {top: 10, right: 30, bottom: 30, left: 30};
+      width = 600 - margin.left - margin.right;
+      height = 600 - margin.top - margin.bottom;
+     
+      var canvas = createCanvas(width, height).canvas;
+      push();
+      translate(30,30);
+      
+      //generate a random array of data. For example: [1.3,5.3,8.3,2.4,...]
+      var data = d3.range(8).map(function() { return 1+Math.random() * 10; });
+      
+      //the line generators. .x() and .y() tell the function how to map the particular data point's values to the x and y positions.
+      var lineGeneratorBasis = d3.svg.line()
+        .x(function(d,i) { return i*60; })
+        .y(function(d,i) { return d*40; })
+        .interpolate('basis');
+      
+      var lineGeneratorLinear = d3.svg.line()
+        .x(function(d,i) { return i*60; })
+        .y(function(d,i) { return d*40; })
+        .interpolate('linear');
+      
+      var lineGeneratorStep = d3.svg.line()
+        .x(function(d,i) { return i*60; })
+        .y(function(d,i) { return d*40; })
+        .interpolate('step-before');
+      
+     
+
+      stroke('black');
+      var cPathBasis = new Path2D(lineGeneratorBasis(data));
+      var cPathLinear = new Path2D(lineGeneratorLinear(data));
+      var cPathStep = new Path2D(lineGeneratorStep(data));
+      
+      strokeWeight(3);
+      stroke('#033E8C');
+      canvas.getContext('2d').stroke(cPathBasis);
+      stroke('#F2B705');
+      canvas.getContext('2d').stroke(cPathLinear);
+      stroke('#00D96F');
+      canvas.getContext('2d').stroke(cPathStep);
+      
+      fill('#fff');
+      stroke('#000');
+      strokeWeight(1);
+      for(var i = 0; i < data.length; i++) {
+        ellipse(i*60,data[i]*40, 10, 10)
+      }
+      
+      //Add a title
+      fill('#000');
+      noStroke();
+      textSize(15);
+      text("D3 path generation drawn by p5.js", 30, 30);
+         
+    }
+
+
+
+
+  </script>
+</head>
+<body>
+
+</body>
+</html>
