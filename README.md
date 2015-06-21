@@ -16,11 +16,16 @@ This cookbook is divided into three folders:
 Installing the Libraries
 ------------------------
 To begin using any of these examples, you will need to include the p5 and D3 libraries. Both [D3](https://github.com/mbostock/d3/wiki) and [p5](http://p5js.org/get-started/) have installation instructions with additional details. If you are familiar with javascript, you will need to ensure that both libraries are included before you include your javascript code.
+    ```
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/p5.js"></script>
     <script>
-        //Your javascript code goes here
+        function setup() { }
+        function draw() { }
+        function mousePressed() { }
+        ...
     </script>
+    ```
 
 Contributing
 ------------
