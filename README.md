@@ -4,7 +4,7 @@ The p5 D3 Cookbook is a repository of documented examples for integrating the fe
 
 Thanks
 --------------
-A special thanks to [@iros](https://github.com/iros) for her great [blog post](http://bocoup.com/weblog/d3js-and-canvas/) that laid out a lot of the initial ideas in this repository. Thanks @sepans for creating initial examples.
+A special thanks to [@iros](https://github.com/iros) for her great [blog post](http://bocoup.com/weblog/d3js-and-canvas/) that laid out a lot of the initial ideas in this repository. Thanks to [@sepans](https://github.com/sepans) for creating initial examples.
 
 Structure
 --------------
