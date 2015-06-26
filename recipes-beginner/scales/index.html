@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>p5 D3 Cookbook: Using D3 Scales</title>
+
+  <link rel="stylesheet" href="/styles/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/styles/style.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>  
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/paraiso.light.min.css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script src="/js/d3.js" charset="utf-8"></script>
+  <script src="/js/p5.js"></script>
+  <script type="text/javascript" src="sketch.js"></script>
+
+
+</head>
+<body>
+
+  <div class="content interior">
+    <div id="top-info">
+      <h1>p5/D3 Cookbook</h1>
+      <h3>Combining the power of <a href="http://www.d3js.org">D3.js</a> with the simplicity of <a href="http://www.p5js.org">p5.js</a></h3>
+    </div> 
+    <div id="recipe-example"></div>
+    <div>
+    
+
+
+
+    <h2>Using D3 Scales in p5</h2>
+      <div class="d3-concepts">
+        <h5>D3 Concepts Used</h5>
+        <p><a href="https://github.com/mbostock/d3/wiki/Quantitative-Scales">d3.scale.linear()</a>
+      </div>
+        <p>D3 scales can be used directly in p5 sketches. D3 scales offer a range of interpolation options. These include interpolating colors and multi-step scales.</p>
+        <p>Like most D3 functions, we must set D3 scale's settings though initial function creation using D3.scale.linear(). D3.scale.linear() will return a new function that we can use to translate numbers and strings into different scales</p>
+        <pre class="javascript"><code>var d3xScale = d3.scale.linear()
+  .domain([0,1])
+  .range([0,50]);</code></pre>
+    <p>Now with d3xScale, we can pass values to it to be rescaled:</p>
+    <pre class="javascript"><code>var x = d3xScale(.5) // returns 25</code></pre>
+    <p>In addition to numbers, D3.scale also can output a range of colors instead of numbers:</p>
+    <pre class="javascript"><code>var colorScale = d3.scale.linear()
+  .domain([0,1])
+  .range(['#aaa','#ddd']);</code></pre>
+    <p>D3.scale also allows intermediate points to be defined.</p>
+        <pre class="javascript"><code>var colorScale = d3.scale.linear()
+  .domain([0,.5,1])
+  .range(['#aaa','#ee33ee,'#ddd']);</code></pre>
+    <h2>The Complete Code</h2>
+    <pre class="javascript"><code>function setup() {
+      
+      //Create the p5 canvas
+      var width = 500,
+          height = 300,
+          margin = 30;
+      
+      var c = createCanvas(width + margin*2, height + margin*2);
+      c.parent('example-recipe');
+      stroke("#fff");
+      
+      //Set the output range of the different scales.
+      var radius = 10,
+          maxRadius = 70
+          startColor = "#033E8C",
+          midColor = "#00D96F";
+          endColor = "#F2B705";
+      
+      
+      /*
+      Create the three different scales used in this example. Each scale returns a function. So the variable d3xScale can be used as if it were a function such as d3xScale(.5)
+      */
+      var d3xScale = d3.scale.linear()
+        .domain([0,1])
+        .range([margin,margin+width]);
+      
+      var d3colorScale = d3.scale.linear()
+        .domain([0,.5,1])
+        .range([startColor,midColor,endColor]);
+      
+      var d3radiusScale = d3.scale.linear()
+        .domain([0,1])
+        .range([radius,maxRadius]);
+
+      /*
+      Create a for loop and draw an ellipse using p5's drawing syntax.
+      */
+      for(var i = 0; i < 1; i += .01) {
+        var scaledX = d3xScale(i);
+        var scaledColor = d3colorScale(i);
+        var scaledRadius = d3radiusScale(i);
+        fill(scaledColor);
+        ellipse(scaledX, maxRadius, scaledRadius, scaledRadius);
+      }
+      
+      //Add a title
+      fill('#000');
+      noStroke();
+      textSize(15);
+      text("Using D3.js scales in a p5 sketch", 30, 30);
+    }</code>
+
+    </pre>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>p5 D3 Cookbook: D3-powered transitions</title>
+
+  <link rel="stylesheet" href="/styles/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/styles/style.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>  
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/paraiso.light.min.css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script src="/js/d3.js" charset="utf-8"></script>
+  <script src="/js/p5.js"></script>
+  <script type="text/javascript" src="sketch.js"></script>
+
+
+</head>
+<body>
+
+  <div class="content interior">
+    <div id="top-info">
+      <h1>p5/D3 Cookbook</h1>
+      <h3>Combining the power of <a href="http://www.d3js.org">D3.js</a> with the simplicity of <a href="http://www.p5js.org">p5.js</a></h3>
+    </div> 
+    <div id="recipe-example"></div>
+    <div>
+    <h2>Generating a Line with D3 and drawing with p5</h2>
+    <div class="d3-concepts">
+      <h5>D3 Concepts Used</h5>
+      <p><a href="https://github.com/mbostock/d3/wiki/SVG-Shapes">d3.svg.line()</a>, <a href="https://github.com/mbostock/d3/wiki/Arrays#d3_range">d3.range()</a>
+    </div>
+    <div>
+        <p>D3 provides transition and animation capabilities by modifying attributes and styles of the HTML DOM. The DOM is usually used to display elements on a web page like &lt;p>, &lt;circle>, or &lt;div>. Using javascript, we can add custom DOM objects like &lt;p5Circle>. These objects will function identically to any other DOM object, but they will not be displayed. This custom DOM can be used by p5 to store transitioned states.</p>
+
+    <div>
+    <h2>The Complete Code</h2>
+    <pre class="javascript"><code>var customDom
+
+
+
+function setup() {
+
+  customDom = d3.select('body').append('customDOM');
+  
+  //Create the p5 canvas
+  var width = 500,
+      height = 300,
+      margin = 30,
+      transitionDuration = 2000;
+  
+  var c = createCanvas(width + margin*2, height + margin*2);
+  c.parent('recipe-example')
+  stroke("#fff");
+  
+  //Append a circle to the customDom object. Add in custom attributes 
+  //that will be later used by p5 to draw shapes.
+  //var circle = customDom.append('customCircle')
+    .classed('circle', true)
+    .attr('radius', 60)
+    .attr('xPos', 40)
+    .attr('yPos', 50);
+  
+  // console.log(customDom.node()); //You can access and view the 
+  //customDom's DOM node using D3's .node() method. Mostly used for 
+  //debugging and educational purposes.
+  
+  //Every 2000ms, run a function to randomize the selected 
+  attributes and trasition between them smoothly. 
+  setInterval(function() {
+    circle
+      .transition()
+      .duration(transitionDuration)
+      .attr('radius', 20+random(40))
+      .attr('xPos', random(width))
+      .attr('yPos', random(height)) 
+  }, transitionDuration);
+
+}
+
+function draw() {
+  blendMode(BLEND);
+  background(255);
+  blendMode(MULTIPLY);
+  
+  //Using D3, we select the circle customObject. We can use 
+  //.attr('attribute-name') to access the values attached 
+  //to the circle object's attributes. 
+  var thisObject = customDom.select('.circle');
+  fill("#033E8C");
+  ellipse(thisObject.attr('xPos'), 
+          thisObject.attr('yPos'),
+          thisObject.attr('radius'),
+          thisObject.attr('radius'));
+
+  fill("#F2B705");
+  ellipse(+thisObject.attr('xPos') + 10, 
+          +thisObject.attr('yPos') + 10 * Math.pow(3,.5),
+          thisObject.attr('radius'),
+          thisObject.attr('radius'));
+  
+  fill("#00D96F");
+  ellipse(+thisObject.attr('xPos') - 10, 
+          +thisObject.attr('yPos') + 10 * Math.pow(3,.5),
+          thisObject.attr('radius'),
+          thisObject.attr('radius'));
+
+  
+  //Add a title
+  fill('#000');
+  noStroke();
+  textSize(15);
+  text("Transitions using D3.js and p5.js", 30, 30);
+}</code></pre>
+  </div>
+</div>
+
+</body>
+</html>

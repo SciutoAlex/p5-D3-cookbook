@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>p5 D3 Cookbook: Using D3 Axis</title>
+
+  <link rel="stylesheet" href="/styles/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/styles/style.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>  
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/paraiso.light.min.css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script src="/js/d3.js" charset="utf-8"></script>
+  <script src="/js/p5.js"></script>
+  <script type="text/javascript" src="sketch.js"></script>
+
+
+</head>
+<body>
+
+  <div class="content interior">
+    <div id="top-info">
+      <h1>p5/D3 Cookbook</h1>
+      <h3>Combining the power of <a href="http://www.d3js.org">D3.js</a> with the simplicity of <a href="http://www.p5js.org">p5.js</a></h3>
+    </div> 
+    <div id="recipe-example"></div>
+    <pre class="javascript">
+      <code>function setup() {
+  
+  var width = 700,
+      height = 300,
+      margin = 30;
+  
+  createCanvas(width + margin*2, height + margin*2);
+  
+  push();
+  translate(margin,margin);  
+  
+  
+  //y axis
+  var D3yscale = d3.scale.linear()
+    .domain([0, 10])
+    .range([height,0]);
+  
+  var D3yaxis = d3.svg.axis()
+    .scale(D3yscale)
+    .orient('left')
+  
+  var p5yaxis = D3p5axis(D3yaxis);
+  
+  p5yaxis.drawTicks(function(txt) {
+    stroke('#ddd');
+    line(0,0,width,0);
+    noStroke();
+    fill('black');
+    textAlign(RIGHT);
+    text(txt, -5, 5);
+  });
+  
+  p5yaxis.drawConnectingLine(function(startX, endX) {
+    //no line connecting
+  });
+  
+    //x axis
+  var D3xscale = d3.scale.ordinal()
+    .domain(['planes','trains','automobiles', 'ferries', 'subways', 'taxis', 'ubers', 'lyft'])
+    .rangeRoundBands([0,width], .1);
+  
+  var D3xaxis = d3.svg.axis()
+    .scale(D3xscale)
+
+  var p5axis = D3p5axis(D3xaxis, 0, height);
+  
+  p5axis.drawTicks(function(txt) {
+    fill('black');
+    noStroke();
+    textAlign(CENTER);
+    text(txt, 0, 23);
+    stroke('black');
+    line(0,3,0,10);
+   
+  });
+  
+  p5axis.drawConnectingLine(function(startX, endX) {
+    stroke('black');
+    strokeWeight(2);
+    line(startX, 0, endX, 0);
+  });
+  
+  
+  var data = [1,2,3,4,5,4.5,5,9.5];
+  
+  for(var i = 0; i < data.length; i++) {
+    fill('blue');
+    var xOffset = D3xscale.range()[i];
+    var barWidth = D3xscale.rangeBand();
+    var barHeight = D3yscale(data[i]);
+    var maxHeight = D3yscale(0);
+    push();
+    translate(xOffset, 0);
+    rect(0, barHeight, barWidth, maxHeight-barHeight);
+    pop();
+  }
+  
+  pop();
+  
+  
+  //Add a title
+  fill('#000');
+  noStroke();
+  textSize(15);
+  text("Drawing D3 axes using p5 canvas methods", 30, 20);
+ 
+}
+
+
+//Function for converting D3 axis to p5 drawing methods
+p5.prototype.D3p5axis = function(d3Axis, x, y) {
+  x = x || 0;
+  y = y || 0;
+  var D3scaleObj = d3Axis.scale();  
+  var customDOMaxis = d3.select('body').append('custom').style('display', 'none').call(d3Axis);
+  var ticks = customDOMaxis.selectAll('g');
+  
+  var returnFunction = function() {}
+  
+  returnFunction.drawTicks = function(drawFunction) {
+    push();
+    translate(x,y);
+    ticks.each(function() {
+      var translateObj = d3.transform(d3.select(this).attr('transform'));
+      var translateX = translateObj.translate[0];
+      var translateY = translateObj.translate[1];
+      push();
+      translate(translateX, translateY);
+      var txt = d3.select(this).select('text').text();
+      drawFunction(txt);
+      pop();
+    });
+    pop();
+  }
+  
+  returnFunction.drawConnectingLine = function(drawFunction) {
+    push();
+    translate(x,y);
+    drawFunction(D3scaleObj.range()[0],D3scaleObj.range()[1]);
+    pop();
+  }
+  
+  return returnFunction;
+}
+      </code>
+
+    </pre>
+  </div>
+
+</body>
+</html>

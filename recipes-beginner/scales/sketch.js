@@ -1,33 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>p5 D3 Cookbook: Basic Scales</title>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js" charset="utf-8"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/p5.js"></script>
-  <script type="text/javascript">
-    //Using D3 scales in p5.js
-    //p5 D3 Cookbook
-
-    /*
-    D3 scales can be used directly in p5 sketches. D3 scales offer a range of interpolation options. These include interpolating colors and multi-step scales.
-
-    CodePen: http://codepen.io/SciutoAlex/pen/warmoy
-    D3 Reference: https://github.com/mbostock/d3/wiki/Quantitative-Scales
-    */
-    function setup() {
+function setup() {
       
       //Create the p5 canvas
       var width = 500,
-          height = 300,
-          margin = 30;
+          height = 200,
+          margin = 100;
       
-      createCanvas(width + margin*2, height + margin*2);
+      var c = createCanvas(width + margin*2, height + margin*2);
+      c.parent('recipe-example');
       stroke("#fff");
       
       //Set the output range of the different scales.
       var radius = 10,
-          maxRadius = 70
+          maxRadius = 200
           startColor = "#033E8C",
           midColor = "#00D96F";
           endColor = "#F2B705";
@@ -51,7 +35,7 @@
       /*
       Create a for loop and draw an ellipse using p5's drawing syntax.
       */
-      for(var i = 0; i < 1; i += .01) {
+      for(var i = 0; i < 1; i += .05) {
         var scaledX = d3xScale(i);
         var scaledColor = d3colorScale(i);
         var scaledRadius = d3radiusScale(i);
@@ -59,16 +43,5 @@
         ellipse(scaledX, maxRadius, scaledRadius, scaledRadius);
       }
       
-      //Add a title
-      fill('#000');
-      noStroke();
-      textSize(15);
-      text("Using D3.js scales in a p5 sketch", 30, 30);
+        
     }
-
-  </script>
-</head>
-<body>
-
-</body>
-</html>

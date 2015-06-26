@@ -1,21 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>p5 D3 Cookbook</title>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js" charset="utf-8"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/p5.js"></script>
-  <script type="text/javascript">
-    //      A simplefied version of http://bl.ocks.org/mbostock/4060366 (wihtout mouse interactions), ported to p5.js
-
-    //Ported by Sepand Ansari, Github: @sepans 
+//Ported by Sepand Ansari, Github: @sepans 
     //Codepen: http://codepen.io/sepans/pen/Qbgaby
 
     function setup() {
 
 
-      var width = 960,
-        height = 500;
+      var width = 700,
+        height = 300;
       
       
       // randomly generate vertices
@@ -36,7 +26,8 @@
          -----------------------
       */
       
-      createCanvas(width, height);
+      var c = createCanvas(width, height);
+      c.parent('recipe-example')
       
 
       var vcolors = [
@@ -87,10 +78,3 @@
       noStroke();
       text('p5.js canvas', 15, 15);
     }
-
-  </script>
-</head>
-<body>
-
-</body>
-</html>

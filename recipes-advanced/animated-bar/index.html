@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>p5 D3 Cookbook: Using D3 Axis</title>
+
+  <link rel="stylesheet" href="/styles/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/styles/style.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>  
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/paraiso.light.min.css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script src="/js/d3.js" charset="utf-8"></script>
+  <script src="/js/p5.js"></script>
+  <script src="/js/p5.dom.js"></script>
+  <script type="text/javascript" src="sketch.js"></script>
+
+
+</head>
+<body>
+
+  <div class="content interior">
+    <div id="top-info">
+      <h1>p5/D3 Cookbook</h1>
+      <h3>Combining the power of <a href="http://www.d3js.org">D3.js</a> with the simplicity of <a href="http://www.p5js.org">p5.js</a></h3>
+    </div> 
+    <div id="recipe-example"></div>
+    <pre class="javascript"><code>var dataContainer;
+
+function setup() {
+  var margin = {top: 10, right: 30, bottom: 30, left: 30};
+  width = 600 - margin.left - margin.right;
+  height = 600 - margin.top - margin.bottom;
+
+  createCanvas(width, height);
+  
+  //Using custom DOM elements to store and access animated variables
+  dataContainer = d3.select('body').append('custom');
+  
+  
+  textAlign(CENTER);
+  
+  //Periodic function that produces a series of D3 transitions.
+  refresh();
+  setInterval(refresh, 3000);
+  
+  //Replace the draw() loop with d3.timer. You can rename drawFunction() draw()
+  //and use the draw() loop. To my eye, the animation is not as smooth.
+  d3.timer(drawFunction); 
+}
+
+
+//Refresh function contains only D3
+function refresh() {
+  var values;
+  var rand = Math.random() * 30 + 10;
+  var slope = Math.random() * 6 - 3;
+  values = d3.range(20).map(function(i) { 
+    var val = i*slope + rand + Math.random() * 3;
+    return (val > 50) ? 50 : val;
+  }) 
+  
+  x = d3.scale.linear()
+    .domain([0, values.length])
+    .range([0, width]);
+  
+  y = d3.scale.linear()
+    .domain([0, 50])
+    .range([height, 0]);
+ 
+  //bind generated data to custom dom elements
+  var bars = dataContainer.selectAll('.bars').data(values);
+  
+  //store variables for visual representation. These will be used
+  //later by p5 methods.
+  bars
+    .enter()
+    .append('rect')
+    .attr('height', 120)
+    .attr('class', 'bars')
+    .attr('x', function(d, i) { return x(i) })
+    .attr('dx', function(d) { return width/values.length - 1;})
+    .attr('y', function(d) { return height; })
+  
+  bars
+    .transition()
+    .duration(2000)
+    .delay(function(d,i) { return i * 50;})
+    .attr('height', function(d) { return height - y(d); })
+    .attr('x', function(d, i) { return x(i) })
+    .attr('y', function(d) { return  y(d); })
+ 
+}
+
+//Draw function contains no D3.
+function drawFunction() {
+  background(255);
+  noStroke();
+  
+  //p5.dom
+  var bars = getElements('bars');
+
+  for(var i = 0; i < bars.length; i++) {
+    var thisbar = bars[i];
+    push();
+    translate(thisbar.attribute('x'), thisbar.attribute('y'));
+    
+    if((mouseX > thisbar.attribute('x')) && (mouseX < (int(thisbar.attribute('x')) + int(thisbar.attribute('dx'))))) {
+      fill('brown');
+    } else {
+      fill('red');
+    }
+    rect(1,1, thisbar.attribute('dx'), thisbar.attribute('height'));
+    fill('white')
+    text(int(thisbar.attribute('height')),thisbar.attribute('dx')/2 + 2, 15);
+    pop();
+  }
+  stroke('black');
+  strokeWeight(3);
+  line(0,height,width,height);
+  noStroke();
+}</code></pre>
+  </div>
+
+</body>
+</html>

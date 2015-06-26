@@ -1,35 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>p5 D3 Cookbook: Animated Bar Chart</title>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js" charset="utf-8"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/p5.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/addons/p5.dom.js"></script>
-
-  <script type="text/javascript">
+var example3 = function(p) {
     var dataContainer;
-
-    function setup() {
-      var margin = {top: 10, right: 30, bottom: 30, left: 30};
-      width = 600 - margin.left - margin.right;
-      height = 600 - margin.top - margin.bottom;
-
-      createCanvas(width, height);
+    var margin = 30;
+    p.setup = function() {
       
+      width = 700;
+      height = 200;
+
+      p.createCanvas(width, height);
+      p.translate(margin,margin);
       //Using custom DOM elements to store and access animated variables
       dataContainer = d3.select('body').append('custom');
       
       
-      textAlign(CENTER);
+      p.textAlign(p.CENTER);
       
       //Periodic function that produces a series of D3 transitions.
       refresh();
       setInterval(refresh, 3000);
       
-      //Replace the draw() loop with d3.timer. You can rename drawFunction() draw()
-      //and use the draw() loop. To my eye, the animation is not as smooth.
-      d3.timer(drawFunction); 
     }
 
 
@@ -45,11 +33,11 @@
       
       x = d3.scale.linear()
         .domain([0, values.length])
-        .range([0, width]);
+        .range([0, width-margin]);
       
       y = d3.scale.linear()
         .domain([0, 50])
-        .range([height, 0]);
+        .range([height-margin, 0]);
      
       //bind generated data to custom dom elements
       var bars = dataContainer.selectAll('.bars').data(values);
@@ -62,7 +50,7 @@
         .attr('height', 120)
         .attr('class', 'bars')
         .attr('x', function(d, i) { return x(i) })
-        .attr('dx', function(d) { return width/values.length - 1;})
+        .attr('dx', function(d) { return (width-margin*2)/values.length - 1;})
         .attr('y', function(d) { return height; })
       
       bars
@@ -76,38 +64,31 @@
     }
 
     //Draw function contains no D3.
-    function drawFunction() {
-      background(255);
-      noStroke();
+    p.draw = function() {
+      p.background(255);
+      p.noStroke();
       
       //p5.dom
-      var bars = getElements('bars');
+      var bars = p.getElements('bars');
 
       for(var i = 0; i < bars.length; i++) {
         var thisbar = bars[i];
-        push();
-        translate(thisbar.attribute('x'), thisbar.attribute('y'));
+        p.push();
+        p.translate(thisbar.attribute('x'), thisbar.attribute('y'));
         
-        if((mouseX > thisbar.attribute('x')) && (mouseX < (int(thisbar.attribute('x')) + int(thisbar.attribute('dx'))))) {
-          fill('brown');
+        if((p.mouseX > thisbar.attribute('x')) && (p.mouseX < (p.int(thisbar.attribute('x')) + p.int(thisbar.attribute('dx'))))) {
+          p.fill('brown');
         } else {
-          fill('red');
+          p.fill('red');
         }
-        rect(1,1, thisbar.attribute('dx'), thisbar.attribute('height'));
-        fill('white')
-        text(int(thisbar.attribute('height')),thisbar.attribute('dx')/2 + 2, 15);
-        pop();
+        p.rect(0,0, thisbar.attribute('dx'), thisbar.attribute('height'));
+        p.fill('white')
+        p.text(p.int(thisbar.attribute('height')),thisbar.attribute('dx')/2, 15);
+        p.pop();
       }
-      stroke('black');
-      strokeWeight(3);
-      line(0,height,width,height);
-      noStroke();
+      p.stroke('black');
+      p.strokeWeight(3);
+      p.line(0,height-margin,width,height-margin);
+      p.noStroke();
     }
-
-
-  </script>
-</head>
-<body>
-
-</body>
-</html>
+  }

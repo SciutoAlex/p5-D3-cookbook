@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>p5 D3 Cookbook: Creating Lines Using D3</title>
+
+  <link rel="stylesheet" href="/styles/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/styles/style.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>  
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/paraiso.light.min.css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script src="/js/d3.js" charset="utf-8"></script>
+  <script src="/js/p5.js"></script>
+  <script type="text/javascript" src="sketch.js"></script>
+
+
+</head>
+<body>
+
+  <div class="content interior">
+    <div id="top-info">
+      <h1>p5/D3 Cookbook</h1>
+      <h3>Combining the power of <a href="http://www.d3js.org">D3.js</a> with the simplicity of <a href="http://www.p5js.org">p5.js</a></h3>
+    </div> 
+    <div id="recipe-example"></div>
+    <div>
+    <h2>Generating a Line with D3 and drawing with p5</h2>
+      <div class="d3-concepts">
+        <h5>D3 Concepts Used</h5>
+        <p><a href="https://github.com/mbostock/d3/wiki/SVG-Shapes">d3.svg.line()</a>, <a href="https://github.com/mbostock/d3/wiki/Arrays#d3_range">d3.range()</a>
+      </div>
+      <p>This example shows you how to use D3 to generate a variety of paths through control points.</p>
+
+      <p>D3 offers a powerful path generation tool. This tool takes sets of points [[x1,y1],[x2,y2],...] and translates them into an SVG Path string. Newer browsers offer a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Path2D">path2d(SVGpathString)</a> that enables the drawing of SVG defined paths in the canvas window.</p>
+
+      <p>SVG defines its <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths">paths</a> with a text string. These text strings look like:</p>
+      <pre class="svg">
+<code>&lt;path d="M10 10 C 20 20, 40 20, 50 10" />
+&lt;path d="M70 10 C 70 20, 120 20, 120 10" />
+&lt;path d="M130 10 C 120 20, 180 20, 170 10" /></code></pre>
+      <p>D3.svg.line() takes an array and converts the items in the array into the path string. To do this, we must first create the line generating function, then run the function with the array of points. This function will return the path string that we then give to p5.</p>
+      <p>In this example, the array of data that will become our line is:</p>
+      <pre class="javascript"><code>[3,5,3,6,7,8,2,3]</code></pre>
+      <p>The lineGenerator function is created and stored in the variable, lineGeneratorBasis.</p>
+      <pre class="javascript"><code>var lineGeneratorBasis = d3.svg.line()
+  .x(function(data, index) { return map(i,0,8,0,width-margin*2); })
+  .y(function(data, index) { return map(d,0,10,0,height-margin*2); })
+  .interpolate('basis');</code></pre>
+  <p>When we run the lineGeneratorBasis function passing in the array of data, the function will loop through each item in our data array. For each point, it will look at the functions we added in .x() and .y() to understand how our data array should be translated into (x,y) points.</p>
+  <p>Let's see how the lineGeneratorBasis translates the first item&mdash;the integer 3&mdash; into (x,y) points. lineGeneratorBasis sees that we have set the function in .x() to:</p>
+  <pre class="javascript"><code>function(data, index) { return map(index,0,8,0,width-margin*2); });</code></pre>
+  <p>lineGeneratorBasis takes that function and runs it for the first item in our array replacing data with the item's data&mdash;the integer 3&mdash;and replacing index, with the location in the array of our item. </p>
+  <pre class="javascript"><code>function(3, 1) { return map(1,0,8,0,width-margin*2); });</code></pre>
+  <p>lineGeneratorBasis repeats this for all the items in the data array. It does this for both an x value and a y value. Once the function has all the (x,y) positions calculated, it then produces the path string.</p>
+  <pre class="javascript"><code>var svgPathString = lineGeneratorBasis(dataArray) // eg "M70 10 C 70 20, 120 20, 120 10"</code></pre>
+  <p>D3.svg.line() can be customized to produce different interpolations between the (x,y) points. Stepped lines, gently sloping lines, straight lines can all be achieved by changing the .interpolate('interpolationType') function. See the <a href="https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate">full list</a> of interpolation types supported by D3.</p>
+  <p>Once we have the path string stored, we can now draw it to canvas using path2d(). p5 does not yet have an interface for this handy function, but by accessing the &lt;canvas> element directly, we can use it in p5 along with all its useful commands.</p>
+  <p>To do this, we first must store in a variable a referencev to the &lt;canvas>:</p>
+  <pre class="javascript"><code>var c = createCanvas(width, height);
+var canvas = c.canvas;</code></pre>
+  <p>With that reference stored, we can then draw the path:</p>
+  <pre class="javascript"><code>canvas.getContext('2d').stroke(svgPathString);</code></pre>
+    </div>
+    <div>
+    <h2>The Complete Code</h2>
+    <pre class="javascript"><code>function setup() {
+  var margin = 30;
+  width = 700;
+  height = 300;
+ 
+  var c = createCanvas(width, height);
+  var canvas = c.canvas;
+
+  push();
+  translate(margin,margin);
+  
+  var data = d3.range(8).map(function() { return 1+Math.random() * 10; });
+  
+  var lineGeneratorBasis = d3.svg.line()
+    .x(function(data,index) { return map(index,0,8,0,width-margin*2); })
+    .y(function(data,index) { return map(data,0,10,0,height-margin*2); })
+    .interpolate('basis');
+  
+  var lineGeneratorLinear = d3.svg.line()
+    .x(function(data,index) { return map(index,0,8,0,width-margin*2); })
+    .y(function(data,index) { return map(data,0,10,0,height-margin*2); })
+    .interpolate('linear');
+  
+  var lineGeneratorStep = d3.svg.line()
+    .x(function(data,index) { return map(index,0,8,0,width-margin*2); })
+    .y(function(data,index) { return map(data,0,10,0,height-margin*2); })
+    .interpolate('step-before');
+  
+
+  stroke('black');
+  var cPathBasis = new Path2D(lineGeneratorBasis(data));
+  var cPathLinear = new Path2D(lineGeneratorLinear(data));
+  var cPathStep = new Path2D(lineGeneratorStep(data));
+  
+  strokeWeight(3);
+  stroke('#033E8C');
+  canvas.getContext('2d').stroke(cPathBasis);
+  stroke('#F2B705');
+  canvas.getContext('2d').stroke(cPathLinear);
+  stroke('#00D96F');
+  canvas.getContext('2d').stroke(cPathStep);
+  
+  fill('#fff');
+  stroke('#000');
+  strokeWeight(1);
+  for(var i = 0; i < data.length; i++) {
+    ellipse(map(i,0,8,0,width-margin*2),map(data[i],0,10,0,height-margin*2), 10, 10)
+  }
+     
+}</code>
+
+    </pre>
+  </div>
+</div>
+
+</body>
+</html>
