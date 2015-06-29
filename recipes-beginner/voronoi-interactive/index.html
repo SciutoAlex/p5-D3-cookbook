@@ -49,6 +49,18 @@
   }</code></pre>
     </div>
     <pre class="javascript"><code>var c, width, height, polydraw, colorArr, vertices, voronoi, polygons;
+var iOS = (navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false),
+    body = document.body,
+    html = document.documentElement;
+
+function getWidth() {
+  return body.clientWidth;
+}
+
+function getHeight() {
+  return Math.max(body.scrollHeight, body.offsetHeight, 
+                    html.clientHeight, html.scrollHeight, html.offsetHeight);
+}
 
 function setup() {
 
@@ -111,20 +123,6 @@ if (!iOS) {
     polygons = voronoi(vertices);
     polydraw();
   }
-}
-
-
-var iOS = (navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false),
-    body = document.body,
-    html = document.documentElement;
-
-function getWidth() {
-  return body.clientWidth;
-}
-
-function getHeight() {
-  return Math.max(body.scrollHeight, body.offsetHeight, 
-                    html.clientHeight, html.scrollHeight, html.offsetHeight);
 }
 
 function windowResized(){  
