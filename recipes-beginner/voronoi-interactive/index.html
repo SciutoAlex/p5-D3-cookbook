@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>p5 D3 Cookbook: Voronoi Interactive Layout</title>
+
+  <link rel="stylesheet" href="/p5-D3-cookbook/styles/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/p5-D3-cookbook/styles/style.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>  
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/paraiso.light.min.css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script src="/p5-D3-cookbook/js/d3.js" charset="utf-8"></script>
+  <script src="/p5-D3-cookbook/js/p5.js"></script>
+
+  <style type="text/css">
+  canvas {
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:-1;
+  }
+  </style>
+
+</head>
+<body>
+
+  <div class="content interior">
+    <div id="top-info">
+      <h1>p5/D3 Cookbook</h1>
+      <h3>Combining the power of <a href="http://www.d3js.org">D3.js</a> with the simplicity of <a href="http://www.p5js.org">p5.js</a></h3>
+    </div> 
+    <div id="recipe-example"></div>
+    <h2>Creating Interactive Voronoi Layout</h2>
+    <div>
+      <div class="d3-concepts">
+        <h5>D3 Concepts Used</h5>
+        <p><a href="https://github.com/mbostock/d3/wiki/Voronoi-Geom">d3.geom.voronoi()</a></p>
+      </div>
+
+    
+    <p>By Sarah Groff-Palermo (github: <a href="https://github.com/sarahgp">@sarahgp</a>). With help from <a href="http://bl.ocks.org/mbostock/4060366">Mike Bostock</a> and the <a href="http://sciutoalex.github.io/p5-D3-cookbook/recipes-beginner/voronoi/">p5/D3 cookbook</a>.</p>
+    <p>This example creates an interactive Voronoi layout calculated by D3.geom.voronoi() and drawn by p5.</p>
+    <p>In order for the canvas to appear as a background for the page, special CSS is required for the &lt;canvas> element:</p>
+    <pre class="css"><code>canvas {
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:-1;
+  }</code></pre>
+    </div>
+    <pre class="javascript"><code>var c, width, height, polydraw, colorArr, vertices, voronoi, polygons;
+
+function setup() {
+
+  width = getWidth();
+  height = getHeight();
+
+  colorMode(HSL);
+  c = createCanvas(width, height);
+
+  colorArr = [color(240, 5, 29, .05),
+              color(240, 5, 29, .1),
+              color(240, 5, 29, .15),
+              color(240, 5, 39, .05),
+              color(240, 5, 39, .1),
+              color(240, 5, 39, .15),
+              color(240, 5, 49, .05),
+              color(240, 5, 49, .1),
+              color(240, 5, 49, .05)];
+
+  vertices = d3.range(140).map(function(d) {
+      return [Math.random() * width, Math.random() * height];
+    });
+
+  voronoi = d3.geom.voronoi()
+      .clipExtent([[0, 0], [width, height]]);
+
+  polygons = voronoi(vertices);
+
+  polydraw = function() {
+    
+    stroke(255);
+
+    for (var j = 0, jL = polygons.length; j < jL; j++) {
+      
+      var singlegon = polygons[j];
+
+      j === 0 ? fill(color(60, 100, 50, 1)) : 
+                fill(colorArr[j % colorArr.length]);
+
+      beginShape();
+
+      for (var k = 0, kL = singlegon.length; k < kL; k++){
+        vertex(singlegon[k][0], singlegon[k][1]);
+      }
+
+      endShape(CLOSE);
+
+    }
+  }
+
+  polydraw();
+
+}
+
+// on iOS links become unclickable with movement
+if (!iOS) { 
+  function mouseMoved() {
+    c.clear();
+    vertices[0] = [mouseX, mouseY];
+    polygons = voronoi(vertices);
+    polydraw();
+  }
+}
+
+
+var iOS = (navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false),
+    body = document.body,
+    html = document.documentElement;
+
+function getWidth() {
+  return body.clientWidth;
+}
+
+function getHeight() {
+  return Math.max(body.scrollHeight, body.offsetHeight, 
+                    html.clientHeight, html.scrollHeight, html.offsetHeight);
+}
+
+function windowResized(){  
+  width = getWidth();
+  height = getHeight();
+  resizeCanvas(width, height);
+  voronoi = d3.geom.voronoi()
+      .clipExtent([[0, 0], [width, height]]);
+  vertices = d3.range(140).map(function(d) {
+        return [Math.random() * width, Math.random() * height];
+      });
+  polygons = voronoi(vertices);
+  polydraw();
+}</code></pre>
+  </div>
+    <script type="text/javascript" src="sketch.js"></script>
+</body>
+</html>

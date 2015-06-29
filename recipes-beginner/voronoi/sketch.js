@@ -27,7 +27,7 @@
       */
       
       var c = createCanvas(width, height);
-      c.parent('recipe-example')
+      c.parent('recipe-example');
       
 
       var vcolors = [
