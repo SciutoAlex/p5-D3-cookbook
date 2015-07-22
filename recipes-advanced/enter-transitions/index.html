@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>p5 D3 Cookbook: D3-powered circles</title>
+
+  <link rel="stylesheet" href="http://sciutoalex.github.io/p5-D3-cookbook/styles/normalize.css">
+  <link rel="stylesheet" type="text/css" href="http://sciutoalex.github.io/p5-D3-cookbook/styles/style.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>  
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/paraiso.light.min.css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.7/p5.min.js"></script>
+  <script type="text/javascript" src="sketch.js"></script>
+
+
+</head>
+<body>
+
+  <div class="content interior">
+    <div id="top-info">
+      <h1>p5/D3 Cookbook</h1>
+      <h3>Combining the power of <a href="http://www.d3js.org">D3.js</a> with the simplicity of <a href="http://www.p5js.org">p5.js</a></h3>
+    </div> 
+    <div id="recipe-example"></div>
+    <div>
+    <h2>Creating shapes from a simple data array</h2>
+    <div class="d3-concepts">
+      <h5>Using D3 to create </h5>
+      <p><a href="#">d3 Concepts here</a>
+    </div>
+    <div>
+        Modified version of <a href="https://github.com/SciutoAlex/p5-D3-cookbook/tree/gh-pages/recipes-intermediate/individual-transitions">individual transitions</a> to incoperate the using data to render and apply the circles to the DOM (but ignored from the browser), and use p5 to render to the canvas.
+    </div>
+    <div>
+    <h2>The Complete Code</h2>
+    <pre class="javascript"><code>   
+
+      var custom,
+          data = d3.range(50);
+
+      function setup() {
+        custom = d3.select('body').append('custom');
+        
+        var width = 200,
+            height = 200,
+            margin = 30,
+            transitionDuration = 500;
+        
+        var c = createCanvas(width + margin*2, height + margin*2);
+        translate(margin,margin);
+        c.parent('recipe-example');
+        stroke("#fff");
+        
+        var circle = custom.selectAll('circle')
+          .data(data)
+          .enter()
+          .append('customCircle')
+              .classed('circle', true)
+              .attr({ // d3 to set p5 attributes
+                  radius: function() { return random(5, 48); }, 
+                  xPos: function() { return random(width); },
+                  yPos: function() { return random(height); },
+                  id: function(d,i) { return 'c-' + i; } 
+              });
+        
+        setInterval(function() {
+            circle
+                .transition()
+                .duration(transitionDuration)
+                .attr({
+                    radius: function() { return random(10, 36); }, 
+                    xPos: function() { return random(width); },
+                    yPos: function() { return random(height); },
+                });
+        }, transitionDuration);
+
+      }
+
+      function draw() {
+          blendMode(BLEND);
+          background(255);
+          noStroke();
+          colorMode(HSB);
+          blendMode(MULTIPLY);
+          
+          for (var i = 0; i < data.length; i++) {
+
+            var thisObject = custom.select('#c-' +i);
+
+            fill('#ED225D');
+            ellipse(thisObject.attr('xPos'), 
+                    thisObject.attr('yPos'),
+                    thisObject.attr('radius'),
+                    thisObject.attr('radius'));
+          }
+      }
+
+    </code></pre>
+  </div>
+</div>
+
+</body>
+</html>
